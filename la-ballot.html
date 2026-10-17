@@ -76,6 +76,20 @@ details.guide dd{margin:2px 0 0}
 .res{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:.92rem}
 .note{background:var(--warn-soft);color:var(--ink);border-left:4px solid var(--warn);padding:10px 12px;margin-top:10px;border-radius:2px;font-size:.95rem}
 .hidden{display:none!important}
+@media print{
+ .oval{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ .choice input:checked + .oval{background:#000!important;border-color:#000!important;box-shadow:inset 0 0 0 10px #000}
+ .choice input:checked ~ .lbl b::after{content:"  \2714";font-weight:700}
+ .choice input:not(:checked) ~ .lbl{color:#555}
+ #summary{display:block!important;break-before:page}
+ #summary textarea,#summary .row,#saveStatus{display:none!important}
+ #myNotesPrint{display:block!important;white-space:pre-wrap;border:1px solid #999;padding:8px;margin-top:6px}
+ .facets,.cnote,.secctl,.chev,.nob,.clear,#jsWarn,.note{display:none!important}
+ details.sec>summary{background:none!important;color:#000!important;border-bottom:2px solid #000;border-radius:0}
+ .contest{break-inside:avoid}
+ input[type=text]{border:0;border-bottom:1px solid #000;color:#000}
+}
+#myNotesPrint{display:none}
 figure.ex{margin:12px 0 4px;max-width:240px}figure.ex img{width:100%;height:auto;border:1px solid var(--rule);border-radius:8px;display:block}figure.ex figcaption{font-size:.88rem;color:var(--ink-2);margin-top:6px}
 details.sec{margin:0}details.sec>summary{list-style:none;cursor:pointer;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
 details.sec>summary::-webkit-details-marker{display:none}
@@ -757,6 +771,8 @@ function openFor(id){const el=document.getElementById(id);const d=el&&el.closest
 document.addEventListener("click",e=>{const a=e.target.closest&&e.target.closest('a[href^="#c-"]');if(a)openFor(a.getAttribute("href").slice(1));});
 window.addEventListener("hashchange",()=>{if(location.hash.startsWith("#c-"))openFor(location.hash.slice(1));});
 window.addEventListener("beforeprint",()=>document.querySelectorAll("details.sec").forEach(d=>d.open=true));
+window.addEventListener("beforeprint",()=>{let d=document.getElementById("myNotesPrint");if(!d){d=document.createElement("div");d.id="myNotesPrint";const t=document.getElementById("myNotes");t.parentNode.insertBefore(d,t);}d.textContent=(document.getElementById("myNotes").value||"").trim()||"(none)";});
+
 let resetArmed=null;
 $("reset").onclick=()=>{const b=$("reset"),st=$("saveStatus");
   if(!resetArmed){b.textContent="Tap again to clear all";b.classList.add("solid");st.className="status";st.textContent="This erases every mark. Tap the button again within 5 seconds to confirm.";resetArmed=setTimeout(()=>{resetArmed=null;b.textContent="Clear all marks";b.classList.remove("solid");st.textContent="";},5000);return;}
